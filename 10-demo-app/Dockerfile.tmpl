@@ -1,0 +1,3 @@
+# plan.py makes 00-common/generated/demo-app/Dockerfile. Put it next to app.jar.
+FROM $REGISTRY_IP:5000/$PLATFORM_NAME/demo:$IMAGE_TAG
+COPY app.jar /app/app.jar

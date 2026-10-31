@@ -1,0 +1,16 @@
+[Unit]
+Description=Docker engine for @NAME@ local platform
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=notify
+Environment=PATH=@RUNTIME@/docker-bin:/usr/sbin:/usr/bin:/sbin:/bin
+ExecStart=@RUNTIME@/docker-bin/dockerd --config-file @RUNTIME@/daemon.json
+Delegate=yes
+KillMode=process
+LimitNOFILE=1048576
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

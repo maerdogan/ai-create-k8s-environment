@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: influxdb
+  namespace: $NS
+spec:
+  serviceName: influxdb
+  replicas: 1
+  selector:
+    matchLabels:
+      app: influxdb
+  template:
+    metadata:
+      labels:
+        app: influxdb
+    spec:
+      containers:
+        - name: influxdb
+          image: ${INFLUXDB_IMAGE}
+          env:
+            - name: DOCKER_INFLUXDB_INIT_MODE
+              value: setup
+            - name: DOCKER_INFLUXDB_INIT_USERNAME
+              value: admin
+            - name: DOCKER_INFLUXDB_INIT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: influxdb-admin
+                  key: password
+            - name: DOCKER_INFLUXDB_INIT_ADMIN_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: influxdb-admin
+                  key: token
+            - name: DOCKER_INFLUXDB_INIT_ORG
+              value: $PLATFORM_NAME
+            - name: DOCKER_INFLUXDB_INIT_BUCKET
+              value: monitoring
+          ports:
+            - containerPort: 8086
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8086
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: "1"
+              memory: 512Mi
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/influxdb2
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: [ReadWriteOnce]
+        resources:
+          requests:
+            storage: 5Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: influxdb
+  namespace: $NS
+  annotations:
+    metallb.io/loadBalancerIPs: $IP
+spec:
+  type: LoadBalancer
+  selector:
+    app: influxdb
+  ports:
+    - port: 8086
+      targetPort: 8086

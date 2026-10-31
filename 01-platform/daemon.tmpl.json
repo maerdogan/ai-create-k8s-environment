@@ -1,0 +1,10 @@
+{
+  "hosts": ["unix://@RUNTIME@/run/docker.sock"],
+  "group": "@GROUP@",
+  "data-root": "@RUNTIME@/docker-data",
+  "exec-root": "@RUNTIME@/run/exec",
+  "pidfile": "@RUNTIME@/run/docker.pid",
+  "insecure-registries": ["@REGISTRY@:5000"],
+  "log-driver": "local",
+  "log-opts": {"max-size": "10m", "max-file": "2"}
+}

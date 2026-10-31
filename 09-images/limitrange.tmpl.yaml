@@ -1,0 +1,15 @@
+# Default limits for image family "$IMAGE".
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: $PLATFORM_NAME-defaults
+  namespace: $NS
+spec:
+  limits:
+    - type: Container
+      defaultRequest:
+        cpu: $CPU_REQ
+        memory: $MEM_REQ
+      default:
+        cpu: $CPU_LIM
+        memory: $MEM_LIM

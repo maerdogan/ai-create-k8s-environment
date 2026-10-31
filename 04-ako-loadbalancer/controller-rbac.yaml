@@ -1,0 +1,24 @@
+# The chart adds this permission only when the speaker is on.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: metallb-controller-pod-reader
+  namespace: metallb-system
+rules:
+  - apiGroups: [""]
+    resources: [pods]
+    verbs: [get, list, watch]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: metallb-controller-pod-reader
+  namespace: metallb-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: metallb-controller-pod-reader
+subjects:
+  - kind: ServiceAccount
+    name: metallb-controller
+    namespace: metallb-system

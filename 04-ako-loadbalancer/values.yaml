@@ -1,0 +1,15 @@
+# Only the controller runs. It gives IPs to Services.
+# Host routes carry the traffic, so the speaker is not necessary.
+speaker:
+  enabled: false
+  frr:
+    enabled: false
+frrk8s:
+  enabled: false
+controller:
+  resources:
+    requests:
+      cpu: 10m
+      memory: 32Mi
+    limits:
+      memory: 128Mi

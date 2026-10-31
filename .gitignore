@@ -1,0 +1,12 @@
+# Made by 00-common/plan.py.
+00-common/generated/
+
+# Runtime data and credentials. Keep these out of Git.
+runtime/
+secrets/
+*.kubeconfig
+kubeconfig*.yaml
+*.log
+
+__pycache__/
+*.pyc

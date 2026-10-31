@@ -1,0 +1,12 @@
+apiVersion: crd.projectcalico.org/v1
+kind: IPPool
+metadata:
+  name: $POOL
+spec:
+  cidr: $CIDR
+  blockSize: $BLOCK_SIZE
+  ipipMode: Never
+  vxlanMode: Never
+  natOutgoing: true
+  nodeSelector: all()
+  disabled: false

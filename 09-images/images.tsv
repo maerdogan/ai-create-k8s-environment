@@ -1,0 +1,8 @@
+name	cpu_req	cpu_lim	mem_req	mem_lim	java_ram_pct
+demo	100m	500m	256Mi	512Mi	75
+test	100m	500m	256Mi	512Mi	75
+live	100m	500m	256Mi	512Mi	75
+nw-mon	100m	500m	256Mi	512Mi	75
+logger	100m	500m	256Mi	512Mi	75
+database	100m	500m	256Mi	512Mi	75
+analyzer	500m	2	1Gi	2Gi	75

@@ -1,0 +1,25 @@
+controller:
+  ingressClass:
+    name: nginx-$NS
+    create: true
+    setAsDefaultIngress: false
+  watchNamespace: $NS
+  enableCustomResources: false
+  replicaCount: 1
+  config:
+    entries:
+      worker-processes: "1"
+  resources:
+    requests:
+      cpu: 25m
+      memory: 64Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+  service:
+    type: LoadBalancer
+    externalTrafficPolicy: Cluster
+    annotations:
+      metallb.io/loadBalancerIPs: $IP
+prometheus:
+  create: true

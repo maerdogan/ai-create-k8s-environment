@@ -1,0 +1,91 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: haproxy-config
+  namespace: $NS
+data:
+  routes.map: |
+    $ROUTES
+  haproxy.cfg: |
+    global
+        log stdout format raw local0
+        maxconn 2048
+
+    defaults
+        mode http
+        log global
+        option httplog
+        timeout connect 5s
+        timeout client 60s
+        timeout server 60s
+
+    frontend http
+        bind :8080
+        use_backend %[req.hdr(host),field(1,:),lower,map(/usr/local/etc/haproxy/routes.map,be_none)]
+
+    frontend stats
+        bind :8404
+        http-request use-service prometheus-exporter if { path /metrics }
+
+    backend be_none
+        http-request deny deny_status 503
+
+    $BACKENDS
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: haproxy
+  namespace: $NS
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: haproxy
+  template:
+    metadata:
+      labels:
+        app: haproxy
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8404"
+    spec:
+      containers:
+        - name: haproxy
+          image: ${HAPROXY_IMAGE}
+          ports:
+            - containerPort: 8080
+            - containerPort: 8404
+          readinessProbe:
+            tcpSocket:
+              port: 8080
+          resources:
+            requests:
+              cpu: 25m
+              memory: 32Mi
+            limits:
+              cpu: 500m
+              memory: 128Mi
+          volumeMounts:
+            - name: config
+              mountPath: /usr/local/etc/haproxy
+      volumes:
+        - name: config
+          configMap:
+            name: haproxy-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: haproxy
+  namespace: $NS
+  annotations:
+    metallb.io/loadBalancerIPs: $IP
+spec:
+  type: LoadBalancer
+  selector:
+    app: haproxy
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080

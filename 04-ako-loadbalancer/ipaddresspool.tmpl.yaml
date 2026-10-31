@@ -1,0 +1,13 @@
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: $NS
+  namespace: metallb-system
+spec:
+  addresses:
+    - $FIRST-$LAST
+  autoAssign: true
+  serviceAllocation:
+    priority: 50
+    namespaces:
+      - $NS
