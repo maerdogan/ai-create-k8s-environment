@@ -41,6 +41,9 @@ spec:
           env:
             - name: PCAP_ANALYZER_BEHIND_PROXY
               value: "1"
+            # The pod range of the namespace. The NGINX pod connects from it.
+            - name: PCAP_ANALYZER_TRUSTED_PROXIES
+              value: "$PROXIES"
             - name: PCAP_ANALYZER_ADMIN_PASSWORD_HASH
               valueFrom:
                 secretKeyRef:

@@ -18,7 +18,7 @@ controller:
       memory: 256Mi
   service:
     type: LoadBalancer
-    externalTrafficPolicy: Cluster
+    externalTrafficPolicy: $TRAFFIC
     annotations:
       metallb.io/loadBalancerIPs: $IP
 prometheus:

@@ -127,7 +127,9 @@ def gen_core():
 def gen_nginx():
     for r in RECORDS:
         write(f"nginx/{r['ns']}.yaml", fill(
-            "05-nginx-ingress/values.tmpl.yaml", NS=r["ns"], IP=r["nginx"]))
+            "05-nginx-ingress/values.tmpl.yaml", NS=r["ns"], IP=r["nginx"],
+            # pcap-analyzer locks logins per client, so it needs the client address.
+            TRAFFIC="Local" if r["ns"] == "pcap-analyzer" else "Cluster"))
 
 
 def gen_prometheus():
@@ -232,9 +234,11 @@ def gen_demo_app():
 
 
 def gen_pcap_analyzer():
+    r = next(x for x in RECORDS if x["ns"] == "pcap-analyzer")
     write("pcap-analyzer/app.yaml", fill(
-        "15-pcap-analyzer/app.tmpl.yaml", NS="pcap-analyzer",
-        HOST=f"pcap-analyzer.{SETTINGS['DOMAIN']}"))
+        "15-pcap-analyzer/app.tmpl.yaml", NS=r["ns"],
+        HOST=f"pcap-analyzer.{SETTINGS['DOMAIN']}",
+        PROXIES=",".join(cover(r["pod_start"], r["pod_end"]))))
 
 
 def main():
