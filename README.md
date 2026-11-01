@@ -4,7 +4,7 @@ This project makes a VMware Kubernetes Service (VKS) style environment on one Li
 It uses Docker, kind, Calico and MetalLB. It does not install VMware VKS or AKO.
 
 - 8 clusters, each with one node and a fixed IP block.
-- 30 namespaces, each with a fixed range of 50 IPs.
+- 31 namespaces, each with a fixed range of 50 IPs.
 - One NGINX Ingress Controller with a fixed IP in each namespace.
 - Prometheus, Grafana, HAProxy, CoreDNS, PostgreSQL, MongoDB and InfluxDB.
 - Gateway API CRDs, without a Gateway controller.

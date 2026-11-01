@@ -53,7 +53,7 @@ STEPS = {
     ),
     "03-namespaces": dict(
         title="NAMESPACES AND IP RANGES",
-        summary=["Create 30 namespaces.",
+        summary=["Create 31 namespaces.",
                  "Give each namespace 50 IPs: 20 for Services, 30 for pods.",
                  "Calico pools hold pods in the range of the namespace."],
         flow=["Read ip-plan.tsv", "Create Calico pools", "Create namespaces", "Test pod IP"],
@@ -83,7 +83,7 @@ STEPS = {
     ),
     "05-nginx-ingress": dict(
         title="NGINX CONTROLLERS",
-        summary=["Install one NGINX controller in each of the 30 namespaces.",
+        summary=["Install one NGINX controller in each of the 31 namespaces.",
                  "Each controller has the fixed IP nginx_ip in ip-plan.tsv.",
                  "Each controller watches only its own namespace."],
         flow=["Read namespace", "Helm install", "Fix IP", "Test HTTP 404"],
