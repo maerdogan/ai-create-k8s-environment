@@ -230,6 +230,26 @@ STEPS = {
         done=["validate.sh shows RESULT: PASS.", "REVIEW.md lists all items that were not tested."],
         notes=["validate.sh skips a check if its tool is missing.", "Use the order in ../README.txt."],
     ),
+    "15-pcap-analyzer": dict(
+        title="PCAP ANALYZER APPLICATION",
+        summary=["Build the application image from the main branch on GitHub.",
+                 "Deploy it to namespace pcap-analyzer.",
+                 "NGINX serves it with HTTPS at pcap-analyzer.$DOMAIN."],
+        flow=["Get source", "Build image", "Push image", "Make secrets", "Deploy", "Test login"],
+        before=["Steps 05 and 11 are complete."],
+        run=["./install.sh", "Image only: ./install.sh --build-only"],
+        files=["install.sh", "verify.sh", "app.tmpl.yaml"],
+        goal="Run the Python application with a fixed address and HTTPS.",
+        done=["verify.sh shows PASS."],
+        notes=["The image comes from the Containerfile of the application.",
+               "The application uses Python, so it does not use the JDK images.",
+               "The HTTPS certificate is self-signed. A browser shows a warning.",
+               "Login needs HTTPS, because the session cookie is Secure.",
+               "The user name is admin. The password file is pcap-analyzer-admin.env in $PLATFORM_ROOT/runtime/secrets.",
+               "install.sh keeps an existing admin Secret.",
+               "Run 11-dnscore/install.sh to publish the name.",
+               "Keep one replica. Sessions and jobs are in memory."],
+    ),
 }
 
 
@@ -302,7 +322,7 @@ def index():
     lines += section("4. PROCEDURE") + numbered([
         "Edit settings.env.",
         "python3 00-common/plan.py",
-        "Do steps in number order: 01 to 09, then 11 and 12.",
+        "Do steps in number order: 01 to 09, then 11, 12 and 15.",
         "Step 10 is postponed. Step 13 has only verify.sh."])
     lines += section("5. TEST") + numbered([
         "Run verify.sh in each step folder.",

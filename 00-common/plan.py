@@ -200,6 +200,7 @@ def gen_dns():
         a.append((f"mongodb-{ns}", BY_NS[ns]["svc2"]))
     a.append(("influxdb-monitoring-database",
               BY_NS["monitoring-database"]["svc1"]))
+    a.append(("pcap-analyzer", BY_NS["pcap-analyzer"]["nginx"]))
     path = ROOT / "11-dnscore/records.tsv"
     for line in path.read_text().splitlines():
         if line.strip() and not line.startswith("#"):
@@ -230,6 +231,12 @@ def gen_demo_app():
         "10-demo-app/Dockerfile.tmpl", REGISTRY_IP=PLAN["network"]["registry"]))
 
 
+def gen_pcap_analyzer():
+    write("pcap-analyzer/app.yaml", fill(
+        "15-pcap-analyzer/app.tmpl.yaml", NS="pcap-analyzer",
+        HOST=f"pcap-analyzer.{SETTINGS['DOMAIN']}"))
+
+
 def main():
     check_plan()
     if GEN.exists():
@@ -242,6 +249,7 @@ def main():
     gen_dns()
     gen_databases()
     gen_demo_app()
+    gen_pcap_analyzer()
     print(f"OK: {len(PLAN['clusters'])} clusters, {len(RECORDS)} namespaces")
 
 

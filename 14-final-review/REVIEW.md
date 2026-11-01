@@ -16,6 +16,7 @@
 | 11 dnscore | PASS | Failed once under memory pressure, before swap |
 | 12 Databases | PASS | Fix: MongoDB 9.0.4 |
 | 13 Central operations | PASS | deployer only |
+| 15 pcap-analyzer | PASS | HTTPS, login and 60 MB upload work. DNS name is not published |
 
 ## Current state
 - All 8 clusters run together with 16 GiB swap in $PLATFORM_ROOT/runtime/swapfile.

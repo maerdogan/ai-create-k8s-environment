@@ -35,7 +35,7 @@ LOCAL KUBERNETES PLATFORM: INSTALLATION INDEX
 ------------
   1. Edit settings.env.
   2. python3 00-common/plan.py
-  3. Do steps in number order: 01 to 09, then 11 and 12.
+  3. Do steps in number order: 01 to 09, then 11, 12 and 15.
   4. Step 10 is postponed. Step 13 has only verify.sh.
 
 5. TEST
@@ -67,6 +67,7 @@ LOCAL KUBERNETES PLATFORM: INSTALLATION INDEX
   14. 12-databases
   15. 13-central-operations
   16. 14-final-review
+  17. 15-pcap-analyzer
 
 ==============================================================================
 # vim: set ft=text tw=78 nowrap nospell:

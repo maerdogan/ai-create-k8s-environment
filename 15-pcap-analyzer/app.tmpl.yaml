@@ -1,0 +1,123 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pcap-analyzer-data
+  namespace: $NS
+spec:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pcap-analyzer
+  namespace: $NS
+spec:
+  replicas: 1 # Sessions and jobs are in memory.
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: pcap-analyzer
+  template:
+    metadata:
+      labels:
+        app: pcap-analyzer
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        fsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: pcap-analyzer
+          image: "@IMAGE@"
+          ports:
+            - containerPort: 8000
+          env:
+            - name: PCAP_ANALYZER_BEHIND_PROXY
+              value: "1"
+            - name: PCAP_ANALYZER_ADMIN_PASSWORD_HASH
+              valueFrom:
+                secretKeyRef:
+                  name: pcap-analyzer-admin
+                  key: password-hash
+            # The root file system is read-only.
+            - name: HOME
+              value: /tmp
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: "2"
+              memory: 2Gi
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8000
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: pcap-analyzer-data
+        - name: tmp
+          emptyDir:
+            sizeLimit: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pcap-analyzer
+  namespace: $NS
+spec:
+  selector:
+    app: pcap-analyzer
+  ports:
+    - port: 8000
+      targetPort: 8000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: pcap-analyzer
+  namespace: $NS
+  annotations:
+    nginx.org/client-max-body-size: 110m
+    nginx.org/proxy-read-timeout: 300s
+    nginx.org/proxy-send-timeout: 300s
+spec:
+  ingressClassName: nginx-$NS
+  tls:
+    - hosts: ["$HOST"]
+      secretName: pcap-analyzer-tls
+  rules:
+    - host: $HOST
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: pcap-analyzer
+                port:
+                  number: 8000
