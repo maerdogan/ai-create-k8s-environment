@@ -4,7 +4,7 @@ STEP 05: NGINX CONTROLLERS
 
 1. SUMMARY
 ----------
-  1. Install one NGINX controller in each of the 31 namespaces.
+  1. Install one NGINX controller in each of the 30 namespaces.
   2. Each controller has the fixed IP nginx_ip in ip-plan.tsv.
   3. Each controller watches only its own namespace.
 

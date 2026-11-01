@@ -22,7 +22,7 @@
     {"name": "logger", "block": "192.168.100.0/22", "image": "logger",
      "namespaces": ["demo-logger", "test-logger", "live-logger"]},
     {"name": "analyzer", "block": "192.168.104.0/22", "image": "analyzer",
-     "namespaces": ["log-analyzer", "ns-analyzer", "@NAME@-analyzer", "pcap-analyzer"]},
+     "namespaces": ["log-analyzer", "ns-analyzer", "@NAME@-analyzer"]},
     {"name": "central-operations", "block": "192.168.108.0/22", "image": "",
      "namespaces": ["deployer"]}
   ]

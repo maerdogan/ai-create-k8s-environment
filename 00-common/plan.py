@@ -127,9 +127,7 @@ def gen_core():
 def gen_nginx():
     for r in RECORDS:
         write(f"nginx/{r['ns']}.yaml", fill(
-            "05-nginx-ingress/values.tmpl.yaml", NS=r["ns"], IP=r["nginx"],
-            # pcap-analyzer locks logins per client, so it needs the client address.
-            TRAFFIC="Local" if r["ns"] == "pcap-analyzer" else "Cluster"))
+            "05-nginx-ingress/values.tmpl.yaml", NS=r["ns"], IP=r["nginx"]))
 
 
 def gen_prometheus():
@@ -202,7 +200,6 @@ def gen_dns():
         a.append((f"mongodb-{ns}", BY_NS[ns]["svc2"]))
     a.append(("influxdb-monitoring-database",
               BY_NS["monitoring-database"]["svc1"]))
-    a.append(("pcap-analyzer", BY_NS["pcap-analyzer"]["nginx"]))
     path = ROOT / "11-dnscore/records.tsv"
     for line in path.read_text().splitlines():
         if line.strip() and not line.startswith("#"):
@@ -233,14 +230,6 @@ def gen_demo_app():
         "10-demo-app/Dockerfile.tmpl", REGISTRY_IP=PLAN["network"]["registry"]))
 
 
-def gen_pcap_analyzer():
-    r = next(x for x in RECORDS if x["ns"] == "pcap-analyzer")
-    write("pcap-analyzer/app.yaml", fill(
-        "15-pcap-analyzer/app.tmpl.yaml", NS=r["ns"],
-        HOST=f"pcap-analyzer.{SETTINGS['DOMAIN']}",
-        PROXIES=",".join(cover(r["pod_start"], r["pod_end"]))))
-
-
 def main():
     check_plan()
     if GEN.exists():
@@ -253,7 +242,6 @@ def main():
     gen_dns()
     gen_databases()
     gen_demo_app()
-    gen_pcap_analyzer()
     print(f"OK: {len(PLAN['clusters'])} clusters, {len(RECORDS)} namespaces")
 
 

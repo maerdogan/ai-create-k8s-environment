@@ -4,11 +4,10 @@ This project makes a VMware Kubernetes Service (VKS) style environment on one Li
 It uses Docker, kind, Calico and MetalLB. It does not install VMware VKS or AKO.
 
 - 8 clusters, each with one node and a fixed IP block.
-- 31 namespaces, each with a fixed range of 50 IPs.
+- 30 namespaces, each with a fixed range of 50 IPs.
 - One NGINX Ingress Controller with a fixed IP in each namespace.
 - Prometheus, Grafana, HAProxy, CoreDNS, PostgreSQL, MongoDB and InfluxDB.
 - Gateway API CRDs, without a Gateway controller.
-- The pcap-analyzer application, built from its GitHub repository.
 
 ```mermaid
 flowchart TD
@@ -57,7 +56,7 @@ sudo ./01-platform/root-setup.sh
 sudo -v && ./02-clusters/routes.sh
 ```
 
-Then run `install.sh` and `verify.sh` in folders 03 to 09, 11, 12 and 15, in number order.
+Then run `install.sh` and `verify.sh` in folders 03 to 09, 11 and 12, in number order.
 Each folder has a `README.txt` and a `ROADMAP.md`.
 
 | Step | Folder |
@@ -76,7 +75,6 @@ Each folder has a `README.txt` and a `ROADMAP.md`.
 | 12 | `12-databases` |
 | 13 | `13-central-operations` (`verify.sh` only) |
 | 14 | `14-final-review` |
-| 15 | `15-pcap-analyzer` |
 
 ## Use kubectl
 

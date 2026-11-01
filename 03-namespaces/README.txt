@@ -4,7 +4,7 @@ STEP 03: NAMESPACES AND IP RANGES
 
 1. SUMMARY
 ----------
-  1. Create 31 namespaces.
+  1. Create 30 namespaces.
   2. Give each namespace 50 IPs: 20 for Services, 30 for pods.
   3. Calico pools hold pods in the range of the namespace.
 

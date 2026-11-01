@@ -1,4 +1,3 @@
 # <name> <ip>
 # Add one line for each application. Then run plan.py and install.sh.
 # Example: xxx-test 192.168.84.10
-pcap-analyzer-gw 192.168.104.161
