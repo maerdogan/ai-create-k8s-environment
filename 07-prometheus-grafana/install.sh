@@ -30,8 +30,11 @@ done
 for ns in tst-grafana live-grafana; do
   log "Grafana monitoring/$ns -> $(ns_field "$ns" svc1_ip)"
   ensure_secret monitoring "$ns" grafana-admin password
+  kc monitoring -n "$ns" create configmap grafana-dashboards \
+    --from-file="$INSTALL_DIR/07-prometheus-grafana/dashboard-overview.json" \
+    --dry-run=client -o yaml | kc monitoring apply -f -
   kc monitoring apply -f "$GEN/grafana/$ns.yaml"
-  # Grafana reads the data source only at start.
+  # Grafana reads the data source and dashboards only at start.
   kc monitoring -n "$ns" rollout restart deploy/grafana
   kc monitoring -n "$ns" rollout status deploy/grafana --timeout=300s
 done

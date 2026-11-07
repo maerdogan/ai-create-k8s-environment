@@ -10,6 +10,9 @@ done
 for ns in tst-grafana live-grafana; do
   ip=$(ns_field "$ns" svc1_ip)
   node_curl -fsS -m 5 "http://$ip/api/health" >/dev/null || die "$ns does not answer."
-  log "$ns $ip OK"
+  pass=$(sed -n 's/^password=//p' "$SECRETS/$ns-grafana-admin.env")
+  node_curl -fsS -m 5 -u "admin:$pass" "http://$ip/api/dashboards/uid/vks-overview" >/dev/null \
+    || die "$ns has no VKS overview dashboard."
+  log "$ns $ip dashboard OK"
 done
 log 'PASS'

@@ -39,6 +39,7 @@ STEP 07: PROMETHEUS AND GRAFANA
   3. The fixed IP is svc1_ip in ip-plan.tsv.
   4. remote_prometheus in plan.json sets the watched cluster.
   5. A remote Prometheus reads pods with a token of that cluster.
+  6. Each Grafana has the VKS overview dashboard in folder VKS.
 
 7. FILES
 --------
@@ -47,6 +48,7 @@ STEP 07: PROMETHEUS AND GRAFANA
   3. prometheus.tmpl.yaml
   4. grafana.tmpl.yaml
   5. remote-reader.tmpl.yaml
+  6. dashboard-overview.json
 
 ==============================================================================
 # vim: set ft=text tw=78 nowrap nospell:
