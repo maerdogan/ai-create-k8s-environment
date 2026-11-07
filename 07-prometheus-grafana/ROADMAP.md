@@ -22,6 +22,8 @@
 - A pod needs annotations prometheus.io/scrape and prometheus.io/port.
 - Grafana admin passwords are in $PLATFORM_ROOT/runtime/secrets.
 - The fixed IP is svc1_ip in ip-plan.tsv.
+- remote_prometheus in plan.json sets the watched cluster.
+- A remote Prometheus reads pods with a token of that cluster.
 
 ## Rules
 - Do not write outside $PLATFORM_ROOT, except for the sudo items in step 01.

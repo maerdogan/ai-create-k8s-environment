@@ -47,6 +47,9 @@ def records():
     for cluster in PLAN["clusters"]:
         net = ipa.ip_network(cluster["block"])
         for index, ns in enumerate(cluster["namespaces"]):
+            # null keeps a free slot, so the next namespaces keep their IPs.
+            if ns is None:
+                continue
             base = net.network_address + SIZE * index
             start, end = base + 1, base + SIZE
             out.append({
@@ -131,12 +134,24 @@ def gen_nginx():
 
 
 def gen_prometheus():
+    remote = PLAN.get("remote_prometheus", {})
     for r in (x for x in RECORDS if "prometheus" in x["ns"]):
+        # A remote Prometheus watches another cluster through its API server.
+        target = remote.get(r["ns"], r["cluster"])
         others = [x["ns"] for x in RECORDS
-                  if x["cluster"] == r["cluster"] and x["ns"] != r["ns"]]
+                  if x["cluster"] == target and x["ns"] != r["ns"]]
+        sd = ["# Uses the API server of this cluster."]
+        if r["ns"] in remote:
+            sd = ["api_server: https://@API_IP@:6443", "tls_config:",
+                  "  ca_file: /etc/prometheus-remote/ca.crt", "authorization:",
+                  "  credentials_file: /etc/prometheus-remote/token"]
+            write(f"prometheus/{r['ns']}-reader.yaml", fill(
+                "07-prometheus-grafana/remote-reader.tmpl.yaml", NS=r["ns"]))
+            write(f"prometheus/{r['ns']}-target.txt", target)
         write(f"prometheus/{r['ns']}.yaml", fill(
             "07-prometheus-grafana/prometheus.tmpl.yaml", NS=r["ns"],
-            IP=r["svc1"], TARGETS=indent([f"- {o}" for o in others], 14)))
+            IP=r["svc1"], TARGETS=indent([f"- {o}" for o in others], 14),
+            REMOTE_SD=indent(sd, 12)))
     for grafana, source in (("tst-grafana", "tst-prometheus"),
                             ("live-grafana", "live-prometheus")):
         write(f"grafana/{grafana}.yaml", fill(

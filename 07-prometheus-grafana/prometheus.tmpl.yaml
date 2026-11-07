@@ -40,6 +40,7 @@ data:
       - job_name: cluster-pods
         kubernetes_sd_configs:
           - role: pod
+            $REMOTE_SD
             namespaces:
               names:
               $TARGETS
@@ -108,10 +109,18 @@ spec:
               mountPath: /etc/prometheus
             - name: data
               mountPath: /prometheus
+            - name: remote
+              mountPath: /etc/prometheus-remote
+              readOnly: true
       volumes:
         - name: config
           configMap:
             name: prometheus-config
+        # Only a remote Prometheus has this Secret.
+        - name: remote
+          secret:
+            secretName: prometheus-remote
+            optional: true
   volumeClaimTemplates:
     - metadata:
         name: data
