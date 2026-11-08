@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 # Lowers memory use. Run after clusters exist. Restarts control planes one by one.
+# Usage: tune-memory.sh [cluster...]
 source "$(dirname "$(readlink -f "$0")")/../00-common/lib.sh"
 M=/etc/kubernetes/manifests
-for c in $(clusters); do
+targets=("$@")
+[[ ${#targets[@]} -gt 0 ]] || mapfile -t targets < <(running_clusters)
+for c in "${targets[@]}"; do
   node=$c-control-plane
   for f in kube-apiserver kube-controller-manager; do
     docker exec "$node" sh -c "grep -q GOGC $M/$f.yaml || sed -i 's/^  - command:/  - env:\n    - name: GOGC\n      value: \"40\"\n    command:/' $M/$f.yaml"

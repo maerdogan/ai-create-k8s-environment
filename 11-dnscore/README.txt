@@ -43,9 +43,10 @@ STEP 11: DNS (DNSCORE)
 7. FILES
 --------
   1. install.sh
-  2. verify.sh
-  3. records.tsv
-  4. dnscore.tmpl.yaml
+  2. link.sh
+  3. verify.sh
+  4. records.tsv
+  5. dnscore.tmpl.yaml
 
 ==============================================================================
 # vim: set ft=text tw=78 nowrap nospell:

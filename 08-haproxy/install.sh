@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 # Step 08: install HAProxy in each haproxy namespace.
+# Usage: install.sh [namespace...]
 source "$(dirname "$(readlink -f "$0")")/../00-common/lib.sh"
-for ns in $(namespaces_like haproxy); do
+targets=("$@")
+[[ ${#targets[@]} -gt 0 ]] || mapfile -t targets < <(namespaces_like haproxy)
+for ns in "${targets[@]}"; do
   c=$(cluster_of "$ns")
   log "$c/$ns -> $(ns_field "$ns" svc1_ip)"
   kc "$c" apply -f "$GEN/haproxy/$ns.yaml"

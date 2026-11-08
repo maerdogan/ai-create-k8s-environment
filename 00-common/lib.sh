@@ -39,6 +39,15 @@ die() { printf 'ERROR: %s\n' "$*" >&2; exit 1; }
 source "$GEN/network.env"
 
 clusters() { awk -F'\t' 'NR>1 && !s[$1]++ {print $1}' "$PLAN_TSV"; }
+# Clusters of the plan whose node runs now.
+running_clusters() {
+  local up c
+  up=$(docker ps --format '{{.Names}}' 2>/dev/null || true)
+  for c in $(clusters); do
+    grep -qx "$c-control-plane" <<<"$up" && echo "$c"
+  done
+  return 0
+}
 namespaces() { awk -F'\t' -v c="${1:-}" 'NR>1 && (c=="" || $1==c) {print $2}' "$PLAN_TSV"; }
 cluster_of() { awk -F'\t' -v n="$1" '$2==n {print $1}' "$PLAN_TSV"; }
 block_of() { awk -F'\t' -v c="$1" '$1==c {print $12; exit}' "$PLAN_TSV"; }
@@ -87,8 +96,12 @@ mem_guard() {
   (( mb >= ${MIN_MEM_MB:-1500} )) || die "Only ${mb} MiB memory is free. Stop."
 }
 
-# Tests run in one node, so they do not need host routes.
 FIRST_CLUSTER=$(awk -F'\t' 'NR==2 {print $1; exit}' "$PLAN_TSV")
-PROBE_NODE=$FIRST_CLUSTER-control-plane
-node_curl() { docker exec "$PROBE_NODE" curl "$@"; }
-node_port_open() { docker exec "$PROBE_NODE" timeout 5 bash -c "exec 3<>/dev/tcp/$1/$2"; }
+# Tests run in one running node, so they do not need host routes.
+PROBE_NODE=
+probe_node() {
+  [[ -n $PROBE_NODE ]] || PROBE_NODE=$(running_clusters | head -1)-control-plane
+  [[ $PROBE_NODE != -control-plane ]] || die 'No cluster runs.'
+}
+node_curl() { probe_node; docker exec "$PROBE_NODE" curl "$@"; }
+node_port_open() { probe_node; docker exec "$PROBE_NODE" timeout 5 bash -c "exec 3<>/dev/tcp/$1/$2"; }

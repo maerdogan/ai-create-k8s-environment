@@ -35,7 +35,7 @@ targets=("$@")
 [[ ${#targets[@]} -gt 0 ]] || mapfile -t targets < <(clusters)
 for c in "${targets[@]}"; do mem_guard; create_cluster "$c"; done
 bash "$HERE/node-routes.sh"
-bash "$HERE/tune-memory.sh"
+bash "$HERE/tune-memory.sh" "${targets[@]}"
 bash "$HERE/merge-kubeconfig.sh"
 log 'Step 02 is complete. Run verify.sh.'
 log "For host access run in a normal terminal: sudo -v && $HERE/routes.sh"

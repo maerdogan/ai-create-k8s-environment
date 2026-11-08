@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 # Starts one test pod in each namespace. Checks the pod IP. Removes the pod.
+# Usage: verify.sh [namespace...]
 source "$(dirname "$(readlink -f "$0")")/../00-common/lib.sh"
-for ns in $(namespaces); do
+targets=("$@")
+[[ ${#targets[@]} -gt 0 ]] || mapfile -t targets < <(namespaces)
+for ns in "${targets[@]}"; do
   c=$(cluster_of "$ns")
   kc "$c" -n "$ns" delete pod ip-check --now --ignore-not-found >/dev/null
   kc "$c" -n "$ns" run ip-check --image=registry.k8s.io/pause:3.10 --restart=Never >/dev/null

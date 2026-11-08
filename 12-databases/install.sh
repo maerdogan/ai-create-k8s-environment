@@ -1,18 +1,23 @@
 #!/usr/bin/env bash
 # Step 12: install database servers. Application databases come later.
+# Usage: install.sh [server@namespace...], for example postgres@tst-database-1
 source "$(dirname "$(readlink -f "$0")")/../00-common/lib.sh"
-for ns in demo-database tst-database live-database; do
+targets=("$@")
+if [[ ${#targets[@]} -eq 0 ]]; then
+  for f in "$GEN"/databases/*.yaml; do
+    b=$(basename "$f" .yaml)
+    targets+=("${b##*-}@${b%-*}")
+  done
+fi
+for t in "${targets[@]}"; do
   mem_guard
+  db=${t%@*} ns=${t#*@}
   c=$(cluster_of "$ns")
-  ensure_secret "$c" "$ns" postgres-admin password
-  ensure_secret "$c" "$ns" mongodb-admin password
-  kc "$c" apply -f "$GEN/databases/$ns-postgres.yaml"
-  kc "$c" apply -f "$GEN/databases/$ns-mongodb.yaml"
-  kc "$c" -n "$ns" rollout status statefulset/postgres --timeout=300s
-  kc "$c" -n "$ns" rollout status statefulset/mongodb --timeout=300s
+  [[ -f $GEN/databases/$ns-$db.yaml ]] || die "No $db plan for $ns."
+  keys=(password)
+  [[ $db != influxdb ]] || keys=(password token)
+  ensure_secret "$c" "$ns" "$db-admin" "${keys[@]}"
+  kc "$c" apply -f "$GEN/databases/$ns-$db.yaml"
+  kc "$c" -n "$ns" rollout status "statefulset/$db" --timeout=300s
 done
-ns=monitoring-database
-ensure_secret monitoring "$ns" influxdb-admin password token
-kc monitoring apply -f "$GEN/databases/$ns-influxdb.yaml"
-kc monitoring -n "$ns" rollout status statefulset/influxdb --timeout=300s
 log 'Step 12 is complete. Run verify.sh.'

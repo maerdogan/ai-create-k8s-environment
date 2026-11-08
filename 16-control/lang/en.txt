@@ -1,0 +1,196 @@
+# English texts of the VKS menu. This file has all keys.
+# To add a language: copy this file to <code>.txt (for example ur.txt),
+# change _name and translate the text after "=". Keep the keys and each %s.
+# The menu finds the new file. A missing key shows the English text.
+_name=English
+yes=yes
+yes_no=y/n
+
+# Main menu
+main_menu=Main menu
+installation=Installation
+status_management=Status and management
+resource_usage=Resource usage
+language=Language
+back=Back
+quit=Quit
+choice=Choice:
+press_enter=Press Enter to continue.
+reading=Reading the current state …
+ram=RAM
+free=Free
+swap=Swap
+clusters_running=Clusters running
+
+# States and types
+state=State
+state_running=running
+state_stopped=stopped
+state_starting=starting
+state_missing=not installed
+state_unknown=unknown
+type=Type
+type_platform=platform
+type_images=images
+type_cluster=cluster
+type_namespace=namespace
+type_app=app
+cluster=Cluster
+clusters=Clusters
+namespace=Namespace
+namespaces=Namespaces
+app=App
+apps=Apps
+kind=Kind
+pods=Pods
+image=Image
+component=Component
+default=default
+total=Total
+none=none
+
+# Installation menu
+default_install=Default installation
+installed_components=Installed components
+check_component=Check component
+select_install=Select and install
+select_remove=Select and remove
+verify=Verify
+group_infra=Server infrastructure
+group_cluster=Cluster: %s
+all_installed=All default components are installed.
+missing_count=Missing: %s components
+install_missing=Install the missing components
+install_question=Install %s components?
+ram_estimate=Estimated RAM: +%s GiB · Free: %s GiB → %s GiB
+not_enough_ram=Not enough free memory. Nothing is installed. Stop clusters first.
+verifying=Verification:
+counts=Clusters %s · Namespaces %s · Apps %s
+legend_marks=★ default  ● running  ■ stopped  ◐ starting
+only_default=Show only default components
+show_all=Show all components
+goto_status=Go to the status and management menu
+search_prompt=Search (part of a name, empty = all, 0 = back):
+no_result=No result.
+dependencies=Dependencies:
+install_with_deps=Install (with dependencies)
+needed_by=Needed by:
+delete=Delete
+legend_boxes=[x] installed  [ ] not installed  ★ default
+filter=Filter
+filter_hint=Filter (cluster / type / name)
+new_namespace=Add a new namespace
+pick_prompt=Selection (e.g. 3 5, 3-6, a = all):
+pick_prompt_suggest=Selection (e.g. 1 2, 1-5, a = all, o = suggested):
+bad_input=Wrong input.
+nothing_to_do=Nothing to do.
+selected=Selected:
+added_deps=Added as dependencies:
+only_installed=Only installed components are shown.
+cannot_remove=The menu cannot remove %s.
+dependents_found=These components need the selection:
+remove_with_dependents=Delete them too
+remove_only_selected=Delete only the selection (they can stop working)
+cancel=Cancel
+delete_pvc_too=Delete the PVCs (data on disk) too?
+will_delete=Will be deleted:
+cannot_undo=This cannot be undone.
+type_to_confirm=To confirm, write "%s":
+delete_word=delete
+pick_cluster=Cluster:
+name_prompt=Name (Enter = %s):
+ip_range=IP range
+add_and_install=Add to the plan and install?
+verify_all=Verify all
+verify_default=Verify the default set
+verify_select=Select and verify
+verify_counts=✔ %s PASS · ✘ %s FAIL · ■ %s stopped (skipped)
+show_error=Show the error details
+reinstall_failed=Install the failed components again
+skipped=skipped
+do_install=Install
+do_remove=Delete
+failed_log=Failed. Log: %s
+
+# Status and management menu
+summary=Summary
+app_search=Search apps
+all_apps=All apps
+stop=Stop
+start=Start
+restart=Restart
+detail=Detail
+log=Log
+search=Search
+results=%s results
+new_search=New search
+not_searched=Stopped, not searched: %s
+pick_one=Selection (number):
+top_clusters=Clusters that use the most RAM
+low_warning=Memory or swap is low. Stop clusters that you do not use.
+goto_stop=Go to the stop menu
+goto_resources=Go to the resource usage menu
+stop_question=%s will stop. About %s RAM becomes free. Continue?
+restart_question=%s will restart. Continue?
+delete_pvc_named=Delete the PVCs (data on disk) too: %s?
+images_limits=Images and limits:
+related_objects=Related objects:
+last_events=Last events:
+log_follow=f = follow the log (Ctrl+C stops), Enter = back:
+ip_block=IP block
+last_known=Last known namespaces:
+stop_what=What do you want to stop?
+start_what=What do you want to start?
+level_cluster=Cluster
+level_ns=Namespace
+level_app=App
+level_all=All
+suggestion=Suggestion
+suggest_legend=not default, stop is suggested
+stop_count_cluster=%s clusters will stop
+stop_count_ns=%s namespaces will stop
+stop_count_app=%s apps will stop
+start_count_cluster=%s clusters will start
+start_count_ns=%s namespaces will start
+start_count_app=%s apps will start
+frees=about %s GiB becomes free
+default_selected=default: %s
+free_now=Free RAM now: %s GiB
+
+# Resource usage menu
+host=Host usage
+by_cluster=RAM / swap by cluster
+top_pods=Pods that use the most RAM
+memory_refresh=Refresh memory
+swap_empty=Empty swap
+k8s_clusters=Kubernetes (%s clusters)
+other_programs=Other programs
+cache=Cache
+cache_note=(Linux frees it when necessary)
+load=Load (1/5/15 min)
+cores=cores
+low_hint=Memory or swap is low. Suggestion: stop clusters, then empty swap.
+reload=Reload
+system_ns=System (kube-system, calico, metallb)
+stop_this_cluster=Stop this cluster
+restart_this_cluster=Restart this cluster
+goto_cluster=Go to the cluster screen
+pick_detail=Selection (cluster number for details):
+show_system=Show system pods
+hide_system=Hide system pods
+no_workload=This pod has no workload.
+restart_pod=Restart a pod
+restart_cluster=Restart a cluster
+apply_tuning=Apply the memory settings again
+drop_cache=Free the page cache (sudo)
+restart_pods_question=%s pods will restart. Continue?
+restart_clusters_question=%s will restart (about 1 min stop). Continue?
+tuning_question=Each API server restarts for a short time. Continue?
+drop_cache_question=Free the page cache? sudo asks for your password.
+free_before_after=Free RAM: %s GiB → %s GiB
+swap_status=Swap used: %s GiB · Free RAM: %s GiB
+swap_need=Necessary free RAM: %s GiB (swap + 1 GiB)
+enough=There is enough free RAM.
+not_enough=Not enough. %s GiB more must become free.
+stop_suggestion=Clusters to stop (RAM + swap gain):
+swap_question=Empty the swap? sudo asks for your password.

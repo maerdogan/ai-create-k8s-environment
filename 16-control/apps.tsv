@@ -1,0 +1,21 @@
+# Apps that 16-control can install, check, stop and remove.
+# One app on each line. Columns are separated by one tab:
+# id, namespace, other dependencies (comma list or -), RAM in MiB,
+# workloads, manifests in 00-common/generated, install command, verify command.
+# The app also depends on its namespace. plan.py reads this file.
+dnscore	dnscore	-	50	deploy/dnscore	dnscore/dnscore.yaml	11-dnscore/install.sh	11-dnscore/verify.sh
+haproxy@nw-haproxy-1	nw-haproxy-1	-	40	deploy/haproxy	haproxy/nw-haproxy-1.yaml	08-haproxy/install.sh nw-haproxy-1	08-haproxy/verify.sh nw-haproxy-1
+haproxy@nw-haproxy-2	nw-haproxy-2	-	40	deploy/haproxy	haproxy/nw-haproxy-2.yaml	08-haproxy/install.sh nw-haproxy-2	08-haproxy/verify.sh nw-haproxy-2
+haproxy@live-haproxy-1	live-haproxy-1	-	40	deploy/haproxy	haproxy/live-haproxy-1.yaml	08-haproxy/install.sh live-haproxy-1	08-haproxy/verify.sh live-haproxy-1
+prometheus@demo-prometheus	demo-prometheus	-	300	sts/prometheus	prometheus/demo-prometheus.yaml	07-prometheus-grafana/install.sh demo-prometheus	07-prometheus-grafana/verify.sh demo-prometheus
+prometheus@tst-prometheus	tst-prometheus	-	300	sts/prometheus	prometheus/tst-prometheus.yaml	07-prometheus-grafana/install.sh tst-prometheus	07-prometheus-grafana/verify.sh tst-prometheus
+prometheus@live-prometheus	live-prometheus	cluster:live	300	sts/prometheus	prometheus/live-prometheus.yaml	07-prometheus-grafana/install.sh live-prometheus	07-prometheus-grafana/verify.sh live-prometheus
+grafana@tst-grafana	tst-grafana	app:prometheus@tst-prometheus	120	deploy/grafana	grafana/tst-grafana.yaml	07-prometheus-grafana/install.sh tst-grafana	07-prometheus-grafana/verify.sh tst-grafana
+grafana@live-grafana	live-grafana	app:prometheus@live-prometheus	120	deploy/grafana	grafana/live-grafana.yaml	07-prometheus-grafana/install.sh live-grafana	07-prometheus-grafana/verify.sh live-grafana
+postgres@demo-database	demo-database	-	250	sts/postgres	databases/demo-database-postgres.yaml	12-databases/install.sh postgres@demo-database	12-databases/verify.sh postgres@demo-database
+mongodb@demo-database	demo-database	-	250	sts/mongodb	databases/demo-database-mongodb.yaml	12-databases/install.sh mongodb@demo-database	12-databases/verify.sh mongodb@demo-database
+postgres@tst-database-1	tst-database-1	-	250	sts/postgres	databases/tst-database-1-postgres.yaml	12-databases/install.sh postgres@tst-database-1	12-databases/verify.sh postgres@tst-database-1
+mongodb@tst-database-1	tst-database-1	-	250	sts/mongodb	databases/tst-database-1-mongodb.yaml	12-databases/install.sh mongodb@tst-database-1	12-databases/verify.sh mongodb@tst-database-1
+postgres@live-database-1	live-database-1	-	250	sts/postgres	databases/live-database-1-postgres.yaml	12-databases/install.sh postgres@live-database-1	12-databases/verify.sh postgres@live-database-1
+mongodb@live-database-1	live-database-1	-	250	sts/mongodb	databases/live-database-1-mongodb.yaml	12-databases/install.sh mongodb@live-database-1	12-databases/verify.sh mongodb@live-database-1
+influxdb@monitoring-database	monitoring-database	-	250	sts/influxdb	databases/monitoring-database-influxdb.yaml	12-databases/install.sh influxdb@monitoring-database	12-databases/verify.sh influxdb@monitoring-database

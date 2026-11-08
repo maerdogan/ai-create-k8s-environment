@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
+# Usage: verify.sh [cluster...]
 source "$(dirname "$(readlink -f "$0")")/../00-common/lib.sh"
 DNS_IP=$(cat "$GEN/dnscore/server-ip.txt")
 NAME=dns.$DOMAIN
-for c in $(clusters); do
+targets=("$@")
+[[ ${#targets[@]} -gt 0 ]] || mapfile -t targets < <(running_clusters)
+for c in "${targets[@]}"; do
   ip=$(kc "$c" -n default run dns-check --rm -i --restart=Never -q \
     --image=busybox:1.37 -- nslookup "$NAME" 2>/dev/null \
     | awk '/^Address/ && !/:53/ {print $NF}' | tail -1 || true)

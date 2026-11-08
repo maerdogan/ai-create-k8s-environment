@@ -67,6 +67,7 @@ LOCAL KUBERNETES PLATFORM: INSTALLATION INDEX
   14. 12-databases
   15. 13-central-operations
   16. 14-final-review
+  17. 16-control
 
 ==============================================================================
 # vim: set ft=text tw=78 nowrap nospell:

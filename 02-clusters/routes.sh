@@ -5,7 +5,7 @@ source "$(dirname "$(readlink -f "$0")")/../00-common/lib.sh"
 bash "$INSTALL_DIR/02-clusters/node-routes.sh"
 for c in $(clusters); do
   ip=$(node_ip "$c")
-  [[ -n $ip ]] || die "No node IP for $c."
+  [[ -n $ip ]] || { log "$c does not run. No route."; continue; }
   sudo ip route replace "$(block_of "$c")" via "$ip" dev "$BRIDGE"
   log "$(block_of "$c") via $ip ($c)"
 done

@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # Step 09: build and push images. Apply limits to namespaces.
+# Usage: install.sh [--build-only]
 source "$(dirname "$(readlink -f "$0")")/../00-common/lib.sh"
 HERE=$INSTALL_DIR/09-images
 # The static Docker package has no buildx plugin.
@@ -13,6 +14,7 @@ while IFS=$'\t' read -r name _ _ _ _ pct; do
     --build-arg "JAVA_RAM_PCT=$pct"
   docker push -q "$image"
 done < <(tail -n +2 "$HERE/images.tsv")
+[[ ${1:-} != --build-only ]] || { log 'Images are ready.'; exit 0; }
 for f in "$GEN"/limits/*.yaml; do
   ns=$(basename "$f" .yaml)
   kc "$(cluster_of "$ns")" apply -f "$f"

@@ -75,6 +75,20 @@ Each folder has a `README.txt` and a `ROADMAP.md`.
 | 12 | `12-databases` |
 | 13 | `13-central-operations` (`verify.sh` only) |
 | 14 | `14-final-review` |
+| 16 | `16-control` (menu) |
+
+## Control menu
+
+A full platform needs much memory. The menu runs only the parts that you use.
+
+```bash
+./16-control/vks.sh
+```
+
+- Installation: the default set, or selected clusters, namespaces and apps.
+- Status and management: stop, start, restart and delete a cluster, a namespace or an app.
+- Resource usage: memory, swap and CPU of the host, the clusters and the pods.
+- Languages: English (default), Turkish, German, Spanish. See `16-control/README.txt` to add one.
 
 ## Use kubectl
 

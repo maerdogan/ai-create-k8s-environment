@@ -65,6 +65,7 @@ def records():
 
 RECORDS = records()
 BY_NS = {r["ns"]: r for r in RECORDS}
+DB_NS = ("demo-database", "tst-database-1", "live-database-1")
 COLUMNS = ["cluster", "namespace", "start", "end", "vip_start", "vip_end",
            "pod_start", "pod_end", "nginx_ip", "svc1_ip", "svc2_ip", "block"]
 
@@ -112,16 +113,22 @@ def gen_core():
         for r in (x for x in RECORDS if x["cluster"] == name):
             cidrs = cover(r["pod_start"], r["pod_end"])
             names = [f"{r['ns']}-{i}" for i in range(len(cidrs))]
-            ns_docs.append(fill(
+            ns_doc = fill(
                 "03-namespaces/namespace.tmpl.yaml", NS=r["ns"], CLUSTER=name,
-                POOLS=json.dumps(names), RANGE=f"{r['start']}-{r['end']}"))
-            for pool, cidr in zip(names, cidrs):
-                pool_docs.append(fill(
-                    "03-namespaces/ippool.tmpl.yaml", POOL=pool, CIDR=cidr,
-                    BLOCK_SIZE=cidr.split("/")[1]))
-            lb_docs.append(fill(
+                POOLS=json.dumps(names), RANGE=f"{r['start']}-{r['end']}")
+            pools = [fill("03-namespaces/ippool.tmpl.yaml", POOL=pool, CIDR=cidr,
+                          BLOCK_SIZE=cidr.split("/")[1])
+                     for pool, cidr in zip(names, cidrs)]
+            lb_doc = fill(
                 "04-ako-loadbalancer/ipaddresspool.tmpl.yaml", NS=r["ns"],
-                FIRST=r["vip_start"], LAST=r["vip_end"]))
+                FIRST=r["vip_start"], LAST=r["vip_end"])
+            # One namespace alone, for 16-control.
+            write(f"ns/{r['ns']}/namespace.yaml", ns_doc)
+            write(f"ns/{r['ns']}/calico.yaml", "---\n".join(pools))
+            write(f"ns/{r['ns']}/metallb.yaml", lb_doc)
+            ns_docs.append(ns_doc)
+            pool_docs += pools
+            lb_docs.append(lb_doc)
         write(f"namespaces/{name}.yaml", "---\n".join(ns_docs))
         write(f"calico-pools/{name}.yaml", "---\n".join(pool_docs))
         write(f"metallb/{name}.yaml", "---\n".join(lb_docs))
@@ -194,7 +201,7 @@ def gen_limits():
         limits[name] = dict(CPU_REQ=cpu_req, CPU_LIM=cpu_lim,
                             MEM_REQ=mem_req, MEM_LIM=mem_lim)
     for r in RECORDS:
-        image = "database" if r["ns"].endswith("-database") else r["image"]
+        image = "database" if re.search(r"-database(-\d+)?$", r["ns"]) else r["image"]
         if image:
             write(f"limits/{r['ns']}.yaml", fill(
                 "09-images/limitrange.tmpl.yaml", NS=r["ns"], IMAGE=image,
@@ -210,7 +217,7 @@ def gen_dns():
                "tst-grafana", "live-grafana", "nw-haproxy-1", "nw-haproxy-2",
                "live-haproxy-1"):
         a.append((ns, BY_NS[ns]["svc1"]))
-    for ns in ("demo-database", "tst-database", "live-database"):
+    for ns in DB_NS:
         a.append((f"postgres-{ns}", BY_NS[ns]["svc1"]))
         a.append((f"mongodb-{ns}", BY_NS[ns]["svc2"]))
     a.append(("influxdb-monitoring-database",
@@ -230,7 +237,7 @@ def gen_dns():
 
 
 def gen_databases():
-    for ns in ("demo-database", "tst-database", "live-database"):
+    for ns in DB_NS:
         write(f"databases/{ns}-postgres.yaml", fill(
             "12-databases/postgres.tmpl.yaml", NS=ns, IP=BY_NS[ns]["svc1"]))
         write(f"databases/{ns}-mongodb.yaml", fill(
@@ -245,6 +252,38 @@ def gen_demo_app():
         "10-demo-app/Dockerfile.tmpl", REGISTRY_IP=PLAN["network"]["registry"]))
 
 
+def gen_components():
+    """The catalog of 16-control: platform, clusters, namespaces and apps."""
+    cols = ["id", "type", "cluster", "ns", "deps", "default", "ram_mb",
+            "workloads", "manifests", "install", "verify"]
+    rows = [["platform", "platform", "-", "-", "-", 50],
+            ["images", "images", "-", "-", "platform", 0]]
+    for cluster in PLAN["clusters"]:
+        rows.append([f"cluster:{cluster['name']}", "cluster", cluster["name"],
+                     "-", "platform", 1000])
+    for r in RECORDS:
+        rows.append([f"ns:{r['ns']}", "namespace", r["cluster"], r["ns"],
+                     f"cluster:{r['cluster']}", 60])
+    for line in (ROOT / "16-control/apps.tsv").read_text().splitlines():
+        if not line.strip() or line.startswith("#"):
+            continue
+        app, ns, deps, ram, *rest = line.split("\t")
+        assert ns in BY_NS, f"apps.tsv: {ns} is not in plan.json"
+        need = [f"ns:{ns}"] + [d for d in deps.split(",") if d != "-"]
+        rows.append([f"app:{app}", "app", BY_NS[ns]["cluster"], ns,
+                     ",".join(need), int(ram), *rest])
+    ids = {row[0] for row in rows}
+    defaults = set(PLAN.get("defaults", []))
+    assert defaults <= ids, defaults - ids
+    out = ["\t".join(cols)]
+    for row in rows:
+        assert all(d in ids for d in row[4].split(",") if d != "-"), row
+        row = row[:5] + ["1" if row[0] in defaults else "0"] + row[5:]
+        row += ["-"] * (len(cols) - len(row))
+        out.append("\t".join(str(v) for v in row))
+    write("components.tsv", "\n".join(out))
+
+
 def main():
     check_plan()
     if GEN.exists():
@@ -257,6 +296,7 @@ def main():
     gen_dns()
     gen_databases()
     gen_demo_app()
+    gen_components()
     print(f"OK: {len(PLAN['clusters'])} clusters, {len(RECORDS)} namespaces")
 
 

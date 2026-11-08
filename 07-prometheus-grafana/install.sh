@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 # Step 07: install Prometheus and Grafana.
+# Usage: install.sh [namespace...]
 source "$(dirname "$(readlink -f "$0")")/../00-common/lib.sh"
-for ns in $(namespaces_like prometheus); do
+
+install_prometheus() {
+  local ns=$1 c t api token
   c=$(cluster_of "$ns")
   log "Prometheus $c/$ns -> $(ns_field "$ns" svc1_ip)"
   api=
@@ -26,8 +29,10 @@ print(json.dumps({"apiVersion": "v1", "kind": "Secret", "type": "Opaque",
   fi
   sed "s|@API_IP@|$api|" "$GEN/prometheus/$ns.yaml" | kc "$c" apply -f -
   kc "$c" -n "$ns" rollout status statefulset/prometheus --timeout=300s
-done
-for ns in tst-grafana live-grafana; do
+}
+
+install_grafana() {
+  local ns=$1
   log "Grafana monitoring/$ns -> $(ns_field "$ns" svc1_ip)"
   ensure_secret monitoring "$ns" grafana-admin password
   kc monitoring -n "$ns" create configmap grafana-dashboards \
@@ -37,5 +42,15 @@ for ns in tst-grafana live-grafana; do
   # Grafana reads the data source and dashboards only at start.
   kc monitoring -n "$ns" rollout restart deploy/grafana
   kc monitoring -n "$ns" rollout status deploy/grafana --timeout=300s
+}
+
+targets=("$@")
+[[ ${#targets[@]} -gt 0 ]] || mapfile -t targets < <(namespaces_like prometheus; namespaces_like grafana)
+for ns in "${targets[@]}"; do
+  case $ns in
+    *prometheus*) install_prometheus "$ns" ;;
+    *grafana*) install_grafana "$ns" ;;
+    *) die "$ns is not a Prometheus or Grafana namespace." ;;
+  esac
 done
 log 'Step 07 is complete. Run verify.sh.'
