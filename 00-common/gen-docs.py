@@ -250,7 +250,7 @@ STEPS = {
         files=["vks.sh", "setup.sh", "status.sh", "component.sh", "control.sh",
                "resources.sh", "lib-state.sh", "menu-lib.sh", "inventory.py", "catalog.py",
                "related.py", "plan-edit.py", "apps.tsv", "lang-check.sh", "lang/en.txt",
-               "lang/tr.txt", "lang/de.txt", "lang/es.txt"],
+               "lang/tr.txt", "lang/de.txt", "lang/es.txt", "lang/order"],
         goal="Run only the parts of the platform that you need.",
         done=["./component.sh status shows the state of each component."],
         notes=["The default set is the key defaults in plan.json.",
@@ -263,6 +263,7 @@ STEPS = {
                "Their controller pod stops.",
                "New language: copy lang/en.txt to lang/<code>.txt and translate the "
                "text after =. A missing key shows the English text.",
+               "lang/order sets the order of the language list.",
                "Swap off and page cache need sudo. Use a normal terminal for them.",
                "The logs of menu actions are in $PLATFORM_ROOT/runtime/logs."],
     ),

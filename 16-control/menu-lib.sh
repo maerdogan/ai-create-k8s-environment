@@ -32,11 +32,14 @@ t() { local k=$1; shift; printf -- "${TXT[$k]:-$k}" "$@"; }
 saved_lang() { sed -n 's/^lang=//p' "$MENU_CONF" 2>/dev/null | grep . || echo en; }
 save_lang() { printf 'lang=%s\n' "$1" > "$MENU_CONF"; }
 # Prints "code<TAB>name" for each language file.
+# lang/order sets the order. Languages that it does not name come last.
 languages() {
-  local f
+  local f code
   for f in "$LANG_DIR"/*.txt; do
-    printf '%s\t%s\n' "$(basename "$f" .txt)" "$(sed -n 's/^_name=//p' "$f")"
-  done
+    code=$(basename "$f" .txt)
+    printf '%s\t%s\t%s\n' "$(grep -nx "$code" "$LANG_DIR/order" 2>/dev/null | cut -d: -f1 || true)" \
+      "$code" "$(sed -n 's/^_name=//p' "$f")"
+  done | awk -F'\t' 'BEGIN {OFS="\t"} {print ($1 == "" ? 999 : $1), $2, $3}' | sort -n -k1,1 -k2,2 | cut -f2-
 }
 load_lang "$(saved_lang)"
 

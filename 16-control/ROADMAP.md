@@ -31,6 +31,7 @@
 - Start of a cluster also starts all its namespaces and apps.
 - Ingress, HTTPRoute and Gateway objects use no memory, so they stay. Their controller pod stops.
 - New language: copy lang/en.txt to lang/<code>.txt and translate the text after =. A missing key shows the English text.
+- lang/order sets the order of the language list.
 - Swap off and page cache need sudo. Use a normal terminal for them.
 - The logs of menu actions are in $PLATFORM_ROOT/runtime/logs.
 

@@ -49,8 +49,9 @@ STEP 16: CONTROL MENU
      controller pod stops.
   7. New language: copy lang/en.txt to lang/<code>.txt and translate the text
      after =. A missing key shows the English text.
-  8. Swap off and page cache need sudo. Use a normal terminal for them.
-  9. The logs of menu actions are in $PLATFORM_ROOT/runtime/logs.
+  8. lang/order sets the order of the language list.
+  9. Swap off and page cache need sudo. Use a normal terminal for them.
+  10. The logs of menu actions are in $PLATFORM_ROOT/runtime/logs.
 
 7. FILES
 --------
@@ -72,6 +73,7 @@ STEP 16: CONTROL MENU
   16. lang/tr.txt
   17. lang/de.txt
   18. lang/es.txt
+  19. lang/order
 
 ==============================================================================
 # vim: set ft=text tw=78 nowrap nospell:

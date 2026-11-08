@@ -2,6 +2,7 @@
 # To add a language: copy this file to <code>.txt (for example ur.txt),
 # change _name and translate the text after "=". Keep the keys and each %s.
 # The menu finds the new file. A missing key shows the English text.
+# Add the code to lang/order to set its place in the language list.
 _name=English
 yes=yes
 yes_no=y/n
