@@ -65,7 +65,7 @@ def records():
 
 RECORDS = records()
 BY_NS = {r["ns"]: r for r in RECORDS}
-DB_NS = ("demo-database", "tst-database-1", "live-database-1")
+DB_NS = ("demo-database-1", "tst-database-1", "live-database-1")
 COLUMNS = ["cluster", "namespace", "start", "end", "vip_start", "vip_end",
            "pod_start", "pod_end", "nginx_ip", "svc1_ip", "svc2_ip", "block"]
 
@@ -220,8 +220,8 @@ def gen_dns():
     for ns in DB_NS:
         a.append((f"postgres-{ns}", BY_NS[ns]["svc1"]))
         a.append((f"mongodb-{ns}", BY_NS[ns]["svc2"]))
-    a.append(("influxdb-monitoring-database",
-              BY_NS["monitoring-database"]["svc1"]))
+    a.append(("influxdb-monitoring-database-1",
+              BY_NS["monitoring-database-1"]["svc1"]))
     path = ROOT / "11-dnscore/records.tsv"
     for line in path.read_text().splitlines():
         if line.strip() and not line.startswith("#"):
@@ -242,7 +242,7 @@ def gen_databases():
             "12-databases/postgres.tmpl.yaml", NS=ns, IP=BY_NS[ns]["svc1"]))
         write(f"databases/{ns}-mongodb.yaml", fill(
             "12-databases/mongodb.tmpl.yaml", NS=ns, IP=BY_NS[ns]["svc2"]))
-    ns = "monitoring-database"
+    ns = "monitoring-database-1"
     write(f"databases/{ns}-influxdb.yaml", fill(
         "12-databases/influxdb.tmpl.yaml", NS=ns, IP=BY_NS[ns]["svc1"]))
 

@@ -15,7 +15,7 @@
                "cluster:live", "ns:live-application-1", "ns:live-database-1"],
   "clusters": [
     {"name": "demo", "block": "192.168.80.0/22", "image": "demo",
-     "namespaces": ["demo-first", "demo-run", "demo-last", "demo-prometheus", "demo-database"]},
+     "namespaces": ["demo-first", "demo-run", "demo-last", "demo-prometheus", "demo-database-1"]},
     {"name": "test", "block": "192.168.84.0/22", "image": "test",
      "namespaces": ["tst-application-1", "tst-application-2", "tst-prelive", "tst-last", "tst-prometheus", "tst-database-1"]},
     {"name": "live", "block": "192.168.88.0/22", "image": "live",
@@ -23,7 +23,7 @@
     {"name": "networking", "block": "192.168.92.0/22", "image": "nw-mon",
      "namespaces": ["nw-haproxy-1", "nw-haproxy-2", "dnscore"]},
     {"name": "monitoring", "block": "192.168.96.0/22", "image": "nw-mon",
-     "namespaces": ["tst-grafana", "live-grafana", "monitoring-database", "live-prometheus"]},
+     "namespaces": ["tst-grafana", "live-grafana", "monitoring-database-1", "live-prometheus"]},
     {"name": "logger", "block": "192.168.100.0/22", "image": "logger",
      "namespaces": ["demo-logger", "test-logger", "live-logger"]},
     {"name": "analyzer", "block": "192.168.104.0/22", "image": "analyzer",

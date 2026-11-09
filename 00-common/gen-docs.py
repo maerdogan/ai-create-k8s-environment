@@ -195,7 +195,7 @@ STEPS = {
     "12-databases": dict(
         title="DATABASES",
         summary=["Install PostgreSQL and MongoDB in 3 database namespaces.",
-                 "Install InfluxDB in monitoring-database.",
+                 "Install InfluxDB in monitoring-database-1.",
                  "Application databases come with the Java deployments."],
         flow=["Make secrets", "Install servers", "Wait for ready", "Test ports"],
         before=["Step 04 is complete."],

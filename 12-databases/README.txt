@@ -5,7 +5,7 @@ STEP 12: DATABASES
 1. SUMMARY
 ----------
   1. Install PostgreSQL and MongoDB in 3 database namespaces.
-  2. Install InfluxDB in monitoring-database.
+  2. Install InfluxDB in monitoring-database-1.
   3. Application databases come with the Java deployments.
 
 2. DIAGRAM (MERMAID)
