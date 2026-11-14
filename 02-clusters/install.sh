@@ -21,7 +21,8 @@ create_cluster() {
     log "Create cluster $c"
     kind create cluster --name "$c" --image "$KIND_NODE_IMAGE" \
       --config "$GEN/kind/$c.yaml" --wait 0s \
-      --kubeconfig "$RUNTIME/kubeconfig/$c.yaml"
+      --kubeconfig "$RUNTIME/kubeconfig/$c.yaml" \
+      2> >(grep -v -e 'KIND_EXPERIMENTAL_DOCKER_NETWORK' -e 'Here be dragons' >&2)
   fi
   add_registry "$c"
   manifest=$RUNTIME/manifests/calico-$c.yaml
@@ -33,6 +34,9 @@ create_cluster() {
 
 targets=("$@")
 [[ ${#targets[@]} -gt 0 ]] || mapfile -t targets < <(clusters)
+# kind warns about the custom network for each cluster. Show one notice instead.
+log "NOTICE: The clusters use the Docker network $DOCKER_NETWORK ($NODE_SUBNET) instead of the kind default network."
+log 'NOTICE: kind marks this setting (KIND_EXPERIMENTAL_DOCKER_NETWORK) as experimental. The IP plan needs it. The kind warning is hidden.'
 for c in "${targets[@]}"; do mem_guard; create_cluster "$c"; done
 bash "$HERE/node-routes.sh"
 bash "$HERE/tune-memory.sh" "${targets[@]}"
