@@ -4,9 +4,8 @@ STEP 08: HAPROXY
 
 1. SUMMARY
 ----------
-  1. Install HAProxy in 3 namespaces.
-  2. nw-haproxy-1 and nw-haproxy-2 reach nginx in all clusters.
-  3. live-haproxy-1 reaches nginx in the live cluster only.
+  1. Install HAProxy in nw-haproxy-1.
+  2. nw-haproxy-1 reaches nginx in all clusters.
 
 2. DIAGRAM (MERMAID)
 --------------------

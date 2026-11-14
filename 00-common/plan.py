@@ -180,8 +180,7 @@ def load_routes():
 
 def gen_haproxy():
     routes = load_routes()
-    for ns, scope in (("live-haproxy-1", "live"), ("nw-haproxy-1", None),
-                      ("nw-haproxy-2", None)):
+    for ns, scope in (("nw-haproxy-1", None),):
         targets = [x for x in RECORDS if scope in (None, x["cluster"])]
         names = {x["ns"] for x in targets}
         backends = "\n".join(
@@ -213,9 +212,8 @@ def gen_dns():
          ("registry", PLAN["network"]["registry"])]
     for r in RECORDS:
         a.append((f"nginx-{r['ns']}", r["nginx"]))
-    for ns in ("demo-prometheus", "tst-prometheus", "live-prometheus",
-               "tst-grafana", "live-grafana", "nw-haproxy-1", "nw-haproxy-2",
-               "live-haproxy-1"):
+    for ns in ("tst-prometheus", "live-prometheus",
+               "tst-grafana", "live-grafana", "nw-haproxy-1"):
         a.append((ns, BY_NS[ns]["svc1"]))
     for ns in DB_NS:
         a.append((f"postgres-{ns}", BY_NS[ns]["svc1"]))

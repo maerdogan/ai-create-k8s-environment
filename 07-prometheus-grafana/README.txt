@@ -4,8 +4,8 @@ STEP 07: PROMETHEUS AND GRAFANA
 
 1. SUMMARY
 ----------
-  1. Install Prometheus in the 3 prometheus namespaces.
-  2. demo and tst watch other namespaces in their cluster.
+  1. Install Prometheus in the 2 prometheus namespaces.
+  2. tst-prometheus watches the other namespaces in the test cluster.
   3. live-prometheus runs in monitoring and watches the live cluster.
   4. Install Grafana in tst-grafana and live-grafana.
 

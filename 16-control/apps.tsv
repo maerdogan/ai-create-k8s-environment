@@ -5,9 +5,6 @@
 # The app also depends on its namespace. plan.py reads this file.
 dnscore	dnscore	-	50	deploy/dnscore	dnscore/dnscore.yaml	11-dnscore/install.sh	11-dnscore/verify.sh
 haproxy@nw-haproxy-1	nw-haproxy-1	-	40	deploy/haproxy	haproxy/nw-haproxy-1.yaml	08-haproxy/install.sh nw-haproxy-1	08-haproxy/verify.sh nw-haproxy-1
-haproxy@nw-haproxy-2	nw-haproxy-2	-	40	deploy/haproxy	haproxy/nw-haproxy-2.yaml	08-haproxy/install.sh nw-haproxy-2	08-haproxy/verify.sh nw-haproxy-2
-haproxy@live-haproxy-1	live-haproxy-1	-	40	deploy/haproxy	haproxy/live-haproxy-1.yaml	08-haproxy/install.sh live-haproxy-1	08-haproxy/verify.sh live-haproxy-1
-prometheus@demo-prometheus	demo-prometheus	-	300	sts/prometheus	prometheus/demo-prometheus.yaml	07-prometheus-grafana/install.sh demo-prometheus	07-prometheus-grafana/verify.sh demo-prometheus
 prometheus@tst-prometheus	tst-prometheus	-	300	sts/prometheus	prometheus/tst-prometheus.yaml	07-prometheus-grafana/install.sh tst-prometheus	07-prometheus-grafana/verify.sh tst-prometheus
 prometheus@live-prometheus	live-prometheus	cluster:live	300	sts/prometheus	prometheus/live-prometheus.yaml	07-prometheus-grafana/install.sh live-prometheus	07-prometheus-grafana/verify.sh live-prometheus
 grafana@tst-grafana	tst-grafana	app:prometheus@tst-prometheus	120	deploy/grafana	grafana/tst-grafana.yaml	07-prometheus-grafana/install.sh tst-grafana	07-prometheus-grafana/verify.sh tst-grafana

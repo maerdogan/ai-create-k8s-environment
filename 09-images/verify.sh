@@ -8,7 +8,7 @@ while IFS=$'\t' read -r name _ _ _ _ _; do
   log "$image OK"
 done < <(tail -n +2 "$INSTALL_DIR/09-images/images.tsv")
 [[ ${1:-} != --images-only ]] || { log 'PASS'; exit 0; }
-limit=$(kc analyzer -n log-analyzer get limitrange "$PLATFORM_NAME-defaults" \
+limit=$(kc analyzers -n log-analyzer get limitrange "$PLATFORM_NAME-defaults" \
   -o jsonpath='{.spec.limits[0].default.memory}')
 [[ $limit == 2Gi ]] || die "Analyzer limit is $limit, expected 2Gi."
 log 'PASS'

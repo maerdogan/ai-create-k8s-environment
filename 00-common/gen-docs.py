@@ -112,8 +112,8 @@ STEPS = {
     ),
     "07-prometheus-grafana": dict(
         title="PROMETHEUS AND GRAFANA",
-        summary=["Install Prometheus in the 3 prometheus namespaces.",
-                 "demo and tst watch other namespaces in their cluster.",
+        summary=["Install Prometheus in the 2 prometheus namespaces.",
+                 "tst-prometheus watches the other namespaces in the test cluster.",
                  "live-prometheus runs in monitoring and watches the live cluster.",
                  "Install Grafana in tst-grafana and live-grafana."],
         flow=["Install Prometheus", "Scrape pods", "Install Grafana", "Connect data source"],
@@ -132,9 +132,8 @@ STEPS = {
     ),
     "08-haproxy": dict(
         title="HAPROXY",
-        summary=["Install HAProxy in 3 namespaces.",
-                 "nw-haproxy-1 and nw-haproxy-2 reach nginx in all clusters.",
-                 "live-haproxy-1 reaches nginx in the live cluster only."],
+        summary=["Install HAProxy in nw-haproxy-1.",
+                 "nw-haproxy-1 reaches nginx in all clusters."],
         flow=["Read routes.tsv", "Make backends", "Apply HAProxy", "Test HTTP 503"],
         before=["Step 05 is complete."],
         run=["./install.sh"],
