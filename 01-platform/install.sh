@@ -53,6 +53,11 @@ pull_charts() {
 }
 
 wait_daemon() {
+  # vks.sh started with sudo sets VKS_ROOT_SETUP=1. Then run the root part here.
+  if ! systemctl is-active --quiet "$DOCKER_SERVICE" && [[ ${VKS_ROOT_SETUP:-} == 1 ]]; then
+    log 'Docker is not active. Running root-setup.sh with sudo.'
+    sudo "$INSTALL_DIR/01-platform/root-setup.sh" || die 'root-setup.sh failed.'
+  fi
   systemctl is-active --quiet "$DOCKER_SERVICE" \
     || die "Docker is not active. In a normal terminal run: sudo $INSTALL_DIR/01-platform/root-setup.sh"
   for _ in {1..30}; do

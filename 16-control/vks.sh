@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 # Main menu of VKS. Opens the installation, status and resource menus.
-# Usage: vks.sh
+# Usage: vks.sh  or  sudo vks.sh
+# With sudo the menu runs as the normal user. Only root-setup.sh runs as root.
+if [[ $(id -u) -eq 0 ]]; then
+  [[ -n ${SUDO_USER:-} && $SUDO_USER != root ]] || { echo 'ERROR: Run as a normal user or with sudo.' >&2; exit 1; }
+  exec sudo -u "$SUDO_USER" VKS_ROOT_SETUP=1 "$(readlink -f "$0")" "$@"
+fi
 source "$(dirname "$(readlink -f "$0")")/../00-common/lib.sh"
 source "$INSTALL_DIR/16-control/lib-state.sh"
 source "$CONTROL/menu-lib.sh"
