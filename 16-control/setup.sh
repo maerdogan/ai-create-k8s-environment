@@ -172,7 +172,7 @@ installed_screen() {
         esac
       done
       printf '\n %s\n' "$(t legend_marks)"
-    } | show_text
+    }
     if [[ $only_default == 0 ]]; then item "$BLUE" 1 "$(t only_default)"; else item "$BLUE" 1 "$(t show_all)"; fi
     item "$BLUE" 2 "$(t goto_status)"
     back_quit
@@ -358,7 +358,7 @@ select_install_screen() {
     header "$MENU" "$(t select_install)"
     [[ -z $FILTER ]] || printf ' %s: %s\n' "$(t filter)" "$FILTER"
     mapfile -t rows < <(list_rows 0)
-    print_list "${rows[@]}" | show_text
+    print_list "${rows[@]}"
     printf ' %s\n' "$(t legend_boxes)"
     item "$BLUE" f "$(t filter_hint)"
     item "$GREEN" n "$(t new_namespace)"
@@ -394,7 +394,7 @@ select_remove_screen() {
     printf ' %s\n' "$(t only_installed)"
     [[ -z $FILTER ]] || printf ' %s: %s\n' "$(t filter)" "$FILTER"
     mapfile -t rows < <(list_rows 1)
-    print_list "${rows[@]}" | show_text
+    print_list "${rows[@]}"
     item "$BLUE" f "$(t filter_hint)"
     back_quit
     ask "$(t pick_prompt)"
@@ -430,7 +430,7 @@ verify_screen() {
       2) for i in "${!ID[@]}"; do [[ ${DEF[i]} == 1 ]] && ids+=("${ID[i]}"); done ;;
       3)
         mapfile -t rows < <(for i in "${ORDER[@]}"; do installed "$i" && echo "$i"; done)
-        print_list "${rows[@]}" | show_text
+        print_list "${rows[@]}"
         ask "$(t pick_prompt)"
         parse_pick "${#rows[@]}" "$REPLY" || continue
         for i in "${PICKS[@]}"; do ids+=("${ID[rows[i-1]]}"); done ;;
